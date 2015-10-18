@@ -28,14 +28,14 @@ node.override[:drbd][:packages] = ["drbd-utils"]
 node.override[:drbd][:master] = ( node[:opsworks][:instance][:hostname] == primary_name )
 
 if node[:opsworks][:instance][:hostname] == "filestore1" then
-	node.override[:drbd][:partner][:hostname] = filestore2[:hostname]
+	node.override[:drbd][:partner][:hostname] = "filestore2"
 	node.override[:drbd][:partner][:ipaddress] = filestore2[:ip]
 else
-	node.override[:drbd][:partner][:hostname] = filestore1[:hostname]
+	node.override[:drbd][:partner][:hostname] = "filestore1"
 	node.override[:drbd][:partner][:ipaddress] = filestore1[:ip]
 end
 
-node.override[:drbd][:primary][:fqdn] = instances[primary_name][:hostname]
+node.override[:drbd][:primary][:fqdn] = primary_name
 
 node.override[:drbd][:server][:fqdn] = node[:opsworks][:instance][:hostname]
 node.override[:drbd][:server][:ipaddress] = node[:opsworks][:instance][:ip]
