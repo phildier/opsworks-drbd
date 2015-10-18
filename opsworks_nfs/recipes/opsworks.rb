@@ -1,7 +1,15 @@
 
+# some shortcuts
+primary_name = "filestore1"
+instances = node[:opsworks][:layers][:filestore][:instances]
+filestore1 = instances[:filestore1]
+filestore2 = instances[:filestore2]
+physical_volume = "/dev/xvdi"
+
 # unmount associated volume resource so drbd can use it
 mount "/mnt/#{node[:opsworks][:instance][:hostname]}" do
 	action :umount
+	device physical_volume
 end
 
 # create nfs export dir
@@ -10,14 +18,8 @@ directory "/export"
 # install iptables tool
 include_recipe "iptables"
 
-# some shortcuts
-primary_name = "filestore1"
-instances = node[:opsworks][:layers][:filestore][:instances]
-filestore1 = instances[:filestore1]
-filestore2 = instances[:filestore2]
-
 # configure drbd
-node.override[:drbd][:disk][:location] = "/dev/xvdi"
+node.override[:drbd][:disk][:location] = physical_volume
 node.override[:drbd][:packages] = ["drbd-utils"]
 node.override[:drbd][:master] = ( node[:opsworks][:instance][:hostname] == primary_name )
 
