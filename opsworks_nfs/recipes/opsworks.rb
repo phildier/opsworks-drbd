@@ -6,6 +6,10 @@ filestore1 = instances[:filestore1]
 filestore2 = instances[:filestore2]
 physical_volume = "/dev/xvdi"
 
+puts instances
+puts filestore1
+puts filestore2
+
 # unmount associated volume resource so drbd can use it
 mount "/mnt/#{node[:opsworks][:instance][:hostname]}" do
 	action :umount
