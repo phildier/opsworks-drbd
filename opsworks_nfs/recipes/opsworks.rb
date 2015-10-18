@@ -1,6 +1,6 @@
 
 # unmount associated volume resource so drbd can use it
-mount "/mnt/#{node[:instance][:hostname]}" do
+mount "/mnt/#{node[:opsworks][:instance][:hostname]}" do
 	action :umount
 end
 
