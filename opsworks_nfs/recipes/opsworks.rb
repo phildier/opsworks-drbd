@@ -10,7 +10,11 @@ directory "/export"
 # install iptables tool
 include_recipe "iptables"
 
+# some shortcuts
 primary_name = "filestore1"
+instances = node[:opsworks][:layers][:filestore][:instances]
+filestore1 = instances[:filestore1]
+filestore2 = instances[:filestore2]
 
 # configure drbd
 node.override[:drbd][:disk][:location] = "/dev/xvdi"
@@ -18,14 +22,14 @@ node.override[:drbd][:packages] = ["drbd-utils"]
 node.override[:drbd][:master] = ( node[:opsworks][:instance][:hostname] == primary_name )
 
 if node[:opsworks][:instance][:hostname] == "filestore1" then
-	node.override[:drbd][:partner][:hostname] = node[:opsworks][:instances][:filestore2][:public_dns_name]
-	node.override[:drbd][:partner][:ipaddress] = node[:opsworks][:instances][:filestore2][:ip]
+	node.override[:drbd][:partner][:hostname] = filestore2[:public_dns_name]
+	node.override[:drbd][:partner][:ipaddress] = filestore2[:ip]
 else
-	node.override[:drbd][:partner][:hostname] = node[:opsworks][:instances][:filestore1][:public_dns_name]
-	node.override[:drbd][:partner][:ipaddress] = node[:opsworks][:instances][:filestore1][:ip]
+	node.override[:drbd][:partner][:hostname] = filestore1[:public_dns_name]
+	node.override[:drbd][:partner][:ipaddress] = filestore1[:ip]
 end
 
-node.override[:drbd][:primary][:fqdn] = node[:opsworks][:instances][primary_name][:public_dns_name]
+node.override[:drbd][:primary][:fqdn] = instances[primary_name][:public_dns_name]
 
 node.override[:drbd][:server][:fqdn] = node[:opsworks][:instance][:public_dns_name]
 node.override[:drbd][:server][:ipaddress] = node[:opsworks][:instance][:ip]
