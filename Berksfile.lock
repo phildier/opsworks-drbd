@@ -1,0 +1,23 @@
+DEPENDENCIES
+  apt
+  heartbeat3
+  nfs
+  openssh
+  s3_file
+  wait
+
+GRAPH
+  apt (2.8.2)
+  heartbeat3 (0.4.3)
+  iptables (1.0.0)
+  line (0.6.2)
+  nfs (2.2.5)
+    line (>= 0.0.0)
+    sysctl (>= 0.0.0)
+  ohai (2.0.1)
+  openssh (1.5.2)
+    iptables (>= 0.0.0)
+  s3_file (2.5.4)
+  sysctl (0.6.2)
+    ohai (>= 0.0.0)
+  wait (0.1.1)

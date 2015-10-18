@@ -1,0 +1,66 @@
+{
+	"chef_type": "role",
+	"default_attributes": {},
+	"description": "drbd nfs server role",
+	"env_run_lists": {},
+	"json_class": "Chef::Role",
+	"name": "server",
+	"override_attributes": {
+		"drbd": {
+			"disk": {
+				"location": "/dev/sdb"
+			},
+			"master": true,
+			"packages": [
+				"drbd-utils" 
+			],
+			"partner": {
+				"hostname": "drbd2",
+				"ipaddress": "10.59.0.11"
+			},
+			"primary": {
+				"fqdn": "drbd1"
+			},
+			"server": {
+				"fqdn": "drbd1",
+				"ipaddress": "10.59.0.10"
+			}
+		},
+		"heartbeat": {
+			"ha_cf": {
+				"initdead": "30",
+				"keepalive": "1",
+				"deadtime": "10",
+				"deadping": "10",
+				"warntime": "5",
+				"auto_failback": "on",
+				"logfacility": "local0",
+				"node": [
+					"drbd1",
+					"drbd2"
+				],
+				"ucast": "eth1 10.59.0.11"
+			},
+			"haresources": [
+				{
+					"node": "drbd1",
+					"resources": [
+						"drbddisk::data",
+						"Filesystem::/dev/drbd0::/export",
+						"nfs-kernel-server"
+					]
+				}
+			],
+			"services": [
+				"nfs-kernel-server"
+			]
+		},
+		"nfs":{
+			"v4":"yes"
+		}
+	},
+	"run_list": [
+		"apt",
+		"opsworks_nfs"
+	]
+}
