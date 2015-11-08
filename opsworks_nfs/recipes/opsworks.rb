@@ -22,9 +22,19 @@ directory "/export"
 # install iptables tool
 include_recipe "iptables"
 
+drbd_utils = "drbd-utils-8.9.4-1.x86_64.rpm"
+s3_file "/root/#{drbd_utils}" do
+	remote_path drbd_utils
+	bucket "galaxydeploy"
+end
+
+rpm_package "drbd-utils" do
+	source "/root/#{drbd_utils}"
+end
+
 # configure drbd
 node.override[:drbd][:disk][:location] = physical_volume
-node.override[:drbd][:packages] = ["drbd-utils"]
+node.override[:drbd][:packages] = []
 node.override[:drbd][:master] = ( node[:opsworks][:instance][:hostname] == primary_name )
 
 if node[:opsworks][:instance][:hostname] == "filestore1" then
