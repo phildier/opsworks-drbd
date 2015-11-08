@@ -35,20 +35,24 @@ end
 # configure drbd
 node.override[:drbd][:disk][:location] = physical_volume
 node.override[:drbd][:packages] = []
-node.override[:drbd][:master] = ( node[:opsworks][:instance][:hostname] == primary_name )
 
 if node[:opsworks][:instance][:hostname] == "filestore1" then
-	node.override[:drbd][:partner][:hostname] = "filestore2"
-	node.override[:drbd][:partner][:ipaddress] = filestore2[:ip]
+	hostname = "filestore2"
+	ip = "ec2-54-83-201-250.compute-1.amazonaws.com"
 else
-	node.override[:drbd][:partner][:hostname] = "filestore1"
-	node.override[:drbd][:partner][:ipaddress] = filestore1[:ip]
+	hostname = "filestore1"
+	ip = "ec2-54-225-195-169.compute-1.amazonaws.com"
 end
+
+node.override[:drbd][:master] = ( hostname == primary_name )
+
+node.override[:drbd][:partner][:hostname] = hostname
+node.override[:drbd][:partner][:ipaddress] = ip
 
 node.override[:drbd][:primary][:fqdn] = primary_name
 
-node.override[:drbd][:server][:fqdn] = node[:opsworks][:instance][:hostname]
-node.override[:drbd][:server][:ipaddress] = node[:opsworks][:instance][:ip]
+node.override[:drbd][:server][:fqdn] = hostname
+node.override[:drbd][:server][:ipaddress] = ip
 
 puts node[:drbd]
 
