@@ -37,16 +37,18 @@ node.override[:drbd][:disk][:location] = physical_volume
 node.override[:drbd][:packages] = []
 
 if node[:opsworks][:instance][:hostname] == "filestore1" then
-	hostname = "filestore2"
-	ip = "ec2-54-83-201-250.compute-1.amazonaws.com"
-else
+	partner_hostname = "filestore2"
 	hostname = "filestore1"
-	ip = "ec2-54-225-195-169.compute-1.amazonaws.com"
+	ip = node[:opsworks_nfs][:filestore1_ip] = "10.232.99.55"
+else
+	partner_hostname = "filestore1"
+	hostname = "filestore2"
+	ip = node[:opsworks_nfs][:filestore2_ip] = "10.165.178.246"
 end
 
 node.override[:drbd][:master] = ( hostname == primary_name )
 
-node.override[:drbd][:partner][:hostname] = hostname
+node.override[:drbd][:partner][:hostname] = partner_hostname
 node.override[:drbd][:partner][:ipaddress] = ip
 
 node.override[:drbd][:primary][:fqdn] = primary_name
