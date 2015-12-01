@@ -51,7 +51,7 @@ end
 node.override[:drbd][:master] = ( hostname == primary_name )
 
 node.override[:drbd][:partner][:hostname] = partner_hostname
-node.override[:drbd][:partner][:ipaddress] = ip
+node.override[:drbd][:partner][:ipaddress] = partner_ip
 
 node.override[:drbd][:primary][:fqdn] = primary_name
 
