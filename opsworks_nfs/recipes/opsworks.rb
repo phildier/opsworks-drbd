@@ -38,14 +38,14 @@ node.override[:drbd][:packages] = []
 
 if node[:opsworks][:instance][:hostname] == "filestore1" then
 	hostname = "filestore1"
-	ip = "10.232.99.55"
+	ip = node[:opsworks_nfs][:filestore1][:private_ip]
 	partner_hostname = "filestore2"
-	partner_ip = "10.165.178.246"
+	partner_ip = node[:opsworks_nfs][:filestore2][:private_ip]
 else
 	hostname = "filestore2"
-	ip = "10.165.178.246"
+	ip = node[:opsworks_nfs][:filestore2][:private_ip]
 	partner_hostname = "filestore1"
-	partner_ip = "10.232.99.55"
+	partner_ip = node[:opsworks_nfs][:filestore1][:private_ip]
 end
 
 node.override[:drbd][:master] = ( hostname == primary_name )
