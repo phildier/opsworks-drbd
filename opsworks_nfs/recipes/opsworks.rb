@@ -110,7 +110,7 @@ end
 include_recipe "heartbeat3"
 
 # create nfs export
-nfs_export "/exports" do
+nfs_export "/export" do
 	network "10.0.0.0/8"
 	writeable true
 	sync false
