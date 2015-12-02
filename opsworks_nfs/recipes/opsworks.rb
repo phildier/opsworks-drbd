@@ -97,11 +97,14 @@ node.override[:heartbeat][:haresources] = [
 
 node.override[:heartbeat][:services] = ["nfs"]
 
+directory "/etc/ha.d/resource.d" do
+	recursive true
+end
+
 cookbook_file "/etc/ha.d/resource.d/drbddisk" do
 	source "drbddisk"
 	mode 0755
 	owner "root"
-	recursive true
 end
 
 include_recipe "heartbeat3"
