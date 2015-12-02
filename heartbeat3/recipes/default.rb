@@ -30,7 +30,13 @@ end
 
 # Install the packages
 
-%w{ heartbeat heartbeat-dev }.each do |pkg|
+if node[:platform_family].include?("rhel")
+	heartbeat_packages = %w{ heartbeat heartbeat-devel }
+else 
+	heartbeat_packages = %w{ heartbeat heartbeat-dev }
+end
+
+heartbeat_packages.each do |pkg|
   package pkg do
     action :install
   end
