@@ -90,19 +90,30 @@ node.override[:heartbeat][:haresources] = [
 		"resources" => [
 			"drbddisk::data",
 			"Filesystem::/dev/drbd0::/export",
-			"nfs"
+			"nfs",
+			"elastic-ip"
 		]
 	}
 ]
 
-node.override[:heartbeat][:services] = ["nfs"]
+node.override[:heartbeat][:services] = ["nfs","elastic-ip"]
 
+# needed for heartbeat to manage the drbd volume
 directory "/etc/ha.d/resource.d" do
 	recursive true
 end
-
 cookbook_file "/etc/ha.d/resource.d/drbddisk" do
 	source "drbddisk"
+	mode 0755
+	owner "root"
+end
+
+# allows heartbeat to manage the elastic ip
+template "/etc/init.d/elastic-ip" do
+	variables ({
+		:aws_id => node[:opsworks][:instance][:aws_instance_id],
+		:elastic_ip => node[:opsworks_nfs][:elastic_ip]
+	})
 	mode 0755
 	owner "root"
 end

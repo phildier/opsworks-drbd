@@ -1,0 +1,21 @@
+#!/bin/bash
+
+MY_ID="<%=@aws_id%>" # different for each node
+ELASTIC_IP="<%=@elastic_ip%>"
+REGION="us-east-1"
+
+case $1 in
+    start)
+        aws ec2 associate-address --region "$REGION" --public-ip "$ELASTIC_IP" --instance-id "$MY_ID" > /dev/null
+        echo $0 started
+        ;;
+    stop)
+		aws ec2 disassociate-address --region "$REGION" --public-ip "$ELASTIC_IP" > /dev/null
+        echo $0 stopped
+        ;;
+    status)
+		aws ec2 describe-addresses --region "$REGION" --output text | grep "$ELASTIC_IP" | grep "$MY_ID" > /dev/null
+		# grep will return true if this ip is mapped to this instance
+		[ $? -eq 0 ] && echo $0 OK || echo $0 FAIL
+		;;
+esac
