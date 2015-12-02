@@ -90,11 +90,18 @@ node.override[:heartbeat][:haresources] = [
 		"resources" => [
 			"drbddisk::data",
 			"Filesystem::/dev/drbd0::/export",
-			"nfs-kernel-server"
+			"nfs"
 		]
 	}
 ]
 
-node.override[:heartbeat][:services] = ["nfs-kernel-server"]
+node.override[:heartbeat][:services] = ["nfs"]
+
+cookbook_file "/etc/ha.d/resource.d/drbddisk" do
+	source "drbddisk"
+	mode 0755
+	owner "root"
+	recursive true
+end
 
 include_recipe "heartbeat3"
