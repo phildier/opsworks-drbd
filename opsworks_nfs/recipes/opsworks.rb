@@ -69,3 +69,32 @@ else
     include_recipe "extended_drbd::drbd_fresh_install"
 end
 
+# install nfs server
+node.override[:nfs][:v4] = "yes"
+include_recipe "nfs::server4"
+
+# configure heartbeat
+node.override[:heartbeat][:ha_cf][:initdead] = 30
+node.override[:heartbeat][:ha_cf][:keepalive] = 1
+node.override[:heartbeat][:ha_cf][:deadtime] = 10
+node.override[:heartbeat][:ha_cf][:deadping] = 10
+node.override[:heartbeat][:ha_cf][:warntime] = 5
+node.override[:heartbeat][:ha_cf][:auto_failback] = "on"
+node.override[:heartbeat][:ha_cf][:logfacility] = "local0"
+node.override[:heartbeat][:ha_cf][:node] = ["filestore1","filestore2"]
+node.override[:heartbeat][:ha_cf][:ucast] = "eth0 #{partner_ip}"
+
+node.override[:heartbeat][:haresources] = [
+	{
+		"node" => "filestore1",
+		"resources" => [
+			"drbddisk::data",
+			"Filesystem::/dev/drbd0::/export",
+			"nfs-kernel-server"
+		]
+	}
+]
+
+node.override[:heartbeat][:services] = ["nfs-kernel-server"]
+
+include_recipe "heartbeat3"
