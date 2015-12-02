@@ -62,11 +62,11 @@ node.override[:drbd][:server][:ipaddress] = ip
 puts node[:drbd]
 
 if ::File.exists?("/etc/drbd.conf")
-    # update the config
-    include_recipe "extended_drbd::drbd_inplace_upgrade"
+	# update the config
+	include_recipe "extended_drbd::drbd_inplace_upgrade"
 else
-    # perform fresh install and init of drbd volume
-    include_recipe "extended_drbd::drbd_fresh_install"
+	# perform fresh install and init of drbd volume
+	include_recipe "extended_drbd::drbd_fresh_install"
 end
 
 # install nfs server
@@ -108,3 +108,14 @@ cookbook_file "/etc/ha.d/resource.d/drbddisk" do
 end
 
 include_recipe "heartbeat3"
+
+# create nfs export
+nfs_export "/exports" do
+	network "10.0.0.0/8"
+	writeable true
+	sync false
+	options [
+		"fsid=0",
+		"no_subtree_check"
+	]
+end
